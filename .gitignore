@@ -1,0 +1,30 @@
+# Node.js deps
+node_modules/
+
+# TypeScript
+*.tsbuildinfo
+
+# Build outputs
+frontend/.next/
+frontend/out/
+backend/dist/
+backend/build/
+
+# Logs
+logs/
+*.log
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# Coverage
+coverage/
+*.lcov
+
+# Editor/OS junk
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
