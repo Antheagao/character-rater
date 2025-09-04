@@ -1,0 +1,31 @@
+// Datasource and client
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  //output   = "../src/generated/prisma"
+}
+
+// Characters Information
+model Character {
+  malId       Int   @id 
+  name        String 
+  about       String? @db.Text
+  nicknames   String[]   @db.Text 
+  imagesJson  Json 
+  favorites   Int?
+  etag        String?
+  rawJson     Json
+  updatedAt   DateTime  @updatedAt
+
+  @@index([name])
+} 
+
+// Key-value meta
+model CrawlerMeta {
+  key   String @id
+  value String
+}
