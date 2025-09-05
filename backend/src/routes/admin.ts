@@ -12,14 +12,15 @@ export async function adminRoutes(app: FastifyInstance) {
     return { count, meta };
   });
 
+  // Reset cached page pointer to page 1
   app.post("/admin/reset-crawler", async () => {
     await prisma.crawlerMeta.deleteMany({ where: { key: "last_char_page" } });
     return { ok: true, message: "Reset crawler meta" };
   });
 
-  // Bootstrap all characters
+  // Call Jikan api and store information in the database
   app.post("/admin/bootstrap-characters", async () => {
-    void bootstrapCharacters(); // fire-and-forget
+    void bootstrapCharacters();
     return { ok: true, message: "Bootstrap started" };
   });
 

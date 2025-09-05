@@ -37,16 +37,42 @@ type CharacterListResp = {
   pagination: { has_next_page: boolean };
 };
 
+// Data type from Jiakn api get request for character
 type CharacterFullResp = {
   data: {
     mal_id: number;
+    url?: string | null;
     name: string;
+    name_kanji?: string | null;
     about?: string | null;
     nicknames?: string[] | null;
     images?: Record<string, unknown> | null;
     favorites?: number | null;
+
+    // Anime appearances
+    anime?: {
+      role: string | null;
+      anime: {
+        mal_id: number;
+        url?: string | null;
+        title?: string | null;
+        images?: Record<string, unknown> | null;
+      };
+    }[];
+
+    // Manga appearances
+    manga?: {
+      role: string | null;
+      manga: {
+        mal_id: number;
+        url?: string | null;
+        title?: string | null;
+        images?: Record<string, unknown> | null;
+      };
+    }[];
   };
 };
+
 
 function sleep(ms: number): Promise<void> {
   return new Promise<void>((resolve) => setTimeout(resolve, ms));
@@ -101,6 +127,8 @@ async function hydrateOneCharacter(id: number) {
       where: { malId: d.mal_id },
       update: {
         name: d.name,
+        nameKanji: d.name_kanji ?? null,
+        url: d.url ?? null,
         about: d.about ?? null,
         nicknames: d.nicknames ?? [],
         imagesJson: images,
@@ -110,6 +138,9 @@ async function hydrateOneCharacter(id: number) {
       create: {
         malId: d.mal_id,
         name: d.name,
+        nameKanji: d.name_kanji ?? null,
+        url: d.url ?? null,
+        gender: null,
         about: d.about ?? null,
         nicknames: d.nicknames ?? [],
         imagesJson: images,
@@ -118,11 +149,88 @@ async function hydrateOneCharacter(id: number) {
       },
     });
 
+    // --- Anime appearances ---
+    if (Array.isArray(d.anime)) {
+      for (const item of d.anime) {
+        const a = item?.anime;
+        if (!a?.mal_id) continue;
+
+        const aImages: Prisma.InputJsonValue = JSON.parse(JSON.stringify(a.images ?? {}));
+        const aRaw: Prisma.InputJsonValue = JSON.parse(JSON.stringify(a));
+
+        await prisma.anime.upsert({
+          where: { malId: a.mal_id },
+          update: {
+            title: a.title ?? "",
+            url: a.url ?? null,
+            imagesJson: aImages,
+            rawJson: aRaw,
+          },
+          create: {
+            malId: a.mal_id,
+            title: a.title ?? "",
+            url: a.url ?? null,
+            imagesJson: aImages,
+            rawJson: aRaw,
+          },
+        });
+
+        await prisma.characterAnime
+          .create({
+            data: {
+              characterId: d.mal_id,
+              animeId: a.mal_id,
+              role: item?.role ?? "",
+            },
+          })
+          .catch(() => {});
+      }
+    }
+
+    // --- Manga appearances ---
+    if (Array.isArray(d.manga)) {
+      for (const item of d.manga) {
+        const m = item?.manga;
+        if (!m?.mal_id) continue;
+
+        const mImages: Prisma.InputJsonValue = JSON.parse(JSON.stringify(m.images ?? {}));
+        const mRaw: Prisma.InputJsonValue = JSON.parse(JSON.stringify(m));
+
+        await prisma.manga.upsert({
+          where: { malId: m.mal_id },
+          update: {
+            title: m.title ?? "",
+            url: m.url ?? null,
+            imagesJson: mImages,
+            rawJson: mRaw,
+          },
+          create: {
+            malId: m.mal_id,
+            title: m.title ?? "",
+            url: m.url ?? null,
+            imagesJson: mImages,
+            rawJson: mRaw,
+          },
+        });
+
+        await prisma.characterManga
+          .create({
+            data: {
+              characterId: d.mal_id,
+              mangaId: m.mal_id,
+              role: item?.role ?? "",
+            },
+          })
+          .catch(() => {}); // ignore duplicates
+      }
+    }
+
     if (id % 250 === 0) console.log(`[hydrate] upsert ok mal_id=${id}`);
   } catch (e: any) {
     console.error(`[hydrate] FAIL mal_id=${id}: ${e?.message ?? e}`);
   }
 }
+
 
 export async function hydrateCharacters(ids: number[]) {
   if (!ids.length) return;

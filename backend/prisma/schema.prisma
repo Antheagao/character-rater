@@ -11,18 +11,80 @@ generator client {
 
 // Characters Information
 model Character {
-  malId       Int   @id 
+  malId       Int       @id 
   name        String 
-  about       String? @db.Text
-  nicknames   String[]   @db.Text 
+  nameKanji   String?
+  gender      String?
+  url         String?
+  about       String?   @db.Text
+  nicknames   String[]  @default([])
   imagesJson  Json 
   favorites   Int?
-  etag        String?
   rawJson     Json
   updatedAt   DateTime  @updatedAt
 
+  // Relations
+  animeRoles  CharacterAnime[]
+  mangaRoles  CharacterManga[]
+
   @@index([name])
 } 
+
+// Anime information
+model Anime {
+  malId       Int       @id
+  title       String 
+  url         String?
+  imagesJson  Json
+  favorites   Int?
+  rawJson     Json?
+  updatedAt   DateTime  @updatedAt
+
+  characters  CharacterAnime[]
+  @@index([title])
+}
+
+// Manga information
+model Manga {
+  malId       Int       @id
+  title       String 
+  url         String?
+  imagesJson  Json
+  favorites   Int?
+  rawJson     Json?
+  updatedAt   DateTime  @updatedAt
+
+  characters  CharacterManga[]
+  @@index([title])
+}
+
+// Join characters and anime tables
+model CharacterAnime {
+  characterId Int
+  animeId     Int 
+  role        String 
+
+  character   Character @relation(fields: [characterId], references: [malId], onDelete: Cascade)
+  anime       Anime     @relation(fields: [animeId], references: [malId], onDelete: Cascade)
+
+  @@id([characterId, animeId])
+  @@index([animeId])
+  @@index([role])
+}
+
+// Join characters and manga tables
+model CharacterManga {
+  characterId Int
+  mangaId     Int
+  role        String
+
+  character   Character @relation(fields: [characterId], references: [malId], onDelete: Cascade)
+  manga       Manga     @relation(fields: [mangaId], references: [malId], onDelete: Cascade)
+
+  @@id([characterId, mangaId])
+  @@index([mangaId])
+  @@index([role])
+}
 
 // Key-value meta
 model CrawlerMeta {
