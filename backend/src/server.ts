@@ -7,6 +7,7 @@ import { adminRoutes } from "./routes/adminRoutes.js";
 import { characterRoutes } from "./routes/characters.js";
 import { animeRoutes } from "./routes/animes.js";
 import { mangaRoutes } from "./routes/mangas.js";
+import searchRoutes from "./routes/search.js";
 
 const server = Fastify({ logger: true });
 
@@ -25,6 +26,7 @@ await server.register(adminRoutes);
 await server.register(characterRoutes);
 await server.register(animeRoutes);
 await server.register(mangaRoutes);
+server.register(searchRoutes, { prefix: '/api/search' });
 
 // Check health of server
 server.get("/healthz", async () => ({ ok: true }));

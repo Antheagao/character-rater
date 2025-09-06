@@ -27,6 +27,9 @@ interface MediaCardProps {
 export default function MediaCard({ item, type, priority = false }: MediaCardProps) {
   const href = `/${type}/${item.malId}`;
   const img = imgOf(item);
+  
+  // Get the display name - use title if available, fall back to name
+  const displayName = item.title || item.name || `#${item.malId}`;
 
   return (
     <Link
@@ -37,7 +40,7 @@ export default function MediaCard({ item, type, priority = false }: MediaCardPro
       <div className="relative mb-3 aspect-[5/7] w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-700">
         <Image
           src={img}
-          alt={item.name}
+          alt={displayName}  // Use displayName here too
           fill
           sizes="(max-width: 640px) 48vw, (max-width: 1024px) 24vw, 18vw"
           className="object-cover scale-110 transition-transform duration-500 group-hover:scale-115"
@@ -51,7 +54,7 @@ export default function MediaCard({ item, type, priority = false }: MediaCardPro
       {/* Content */}
       <div className="flex items-center justify-between gap-2">
         <h3 className="flex-1 truncate text-sm font-medium text-gray-900 group-hover:text-blue-600 dark:text-gray-100 dark:group-hover:text-blue-400">
-          {item.name}
+          {displayName}  {/* Use displayName here */}
         </h3>
         
         {typeof item.favorites === "number" && (
