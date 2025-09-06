@@ -76,12 +76,22 @@ export const characterRoutes: FastifyPluginAsync = async (app) => {
         properties: { id: { type: "string" } },
         required: ["id"],
       },
+      querystring: {
+        type: "object",
+        properties: {
+          rolesLimit: { type: "integer", minimum: 1, maximum: 100 }, // optional
+        },
+        additionalProperties: true,
+      },
     },
   }, async (req, reply) => {
     const id = Number((req.params as any).id);
     if (!Number.isFinite(id)) return reply.code(400).send({ error: "Invalid id" });
 
-    const row = await prisma.character.findUnique({
+    const { rolesLimit = 20 } = (req.query ?? {}) as { rolesLimit?: number };
+
+    // 1) Character core fields
+    const character = await prisma.character.findUnique({
       where: { malId: id },
       select: {
         malId: true,
@@ -93,15 +103,73 @@ export const characterRoutes: FastifyPluginAsync = async (app) => {
       },
     });
 
-    if (!row) return reply.code(404).send({ error: "Not found" });
+    if (!character) return reply.code(404).send({ error: "Not found" });
 
+    // 2) Anime appearances (via join table), ordered by anime.favorites desc
+    const [animeRoles, mangaRoles] = await Promise.all([
+      prisma.characterAnime.findMany({
+        where: { characterId: id },
+        include: {
+          anime: {
+            select: {
+              malId: true,
+              title: true,
+              favorites: true,
+              imagesJson: true,
+            },
+          },
+        },
+        orderBy: { anime: { favorites: "desc" } }, // sort by the related anime’s favorites
+        take: Math.min(Math.max(Number(rolesLimit) || 20, 1), 100),
+      }),
+      prisma.characterManga.findMany({
+        where: { characterId: id },
+        include: {
+          manga: {
+            select: {
+              malId: true,
+              title: true,
+              favorites: true,
+              imagesJson: true,
+            },
+          },
+        },
+        orderBy: { manga: { favorites: "desc" } }, // sort by the related manga’s favorites
+        take: Math.min(Math.max(Number(rolesLimit) || 20, 1), 100),
+      }),
+    ]);
+
+    // 3) Shape for frontend (normalize title -> name for consistency, include role)
+    const animeAppearances = animeRoles
+      .filter(r => r.anime) // guard just in case
+      .map(r => ({
+        malId: r.anime.malId,
+        name: r.anime.title,
+        favorites: r.anime.favorites ?? 0,
+        imagesJson: r.anime.imagesJson,
+        role: r.role, // main/supporting/etc
+      }));
+
+    const mangaAppearances = mangaRoles
+      .filter(r => r.manga)
+      .map(r => ({
+        malId: r.manga.malId,
+        name: r.manga.title,
+        favorites: r.manga.favorites ?? 0,
+        imagesJson: r.manga.imagesJson,
+        role: r.role,
+      }));
+
+    // 4) Return single, consistent payload
     return {
-      malId: row.malId,
-      name: row.name,
-      favorites: row.favorites,
-      about: row.about,
-      nicknames: row.nicknames,
-      imagesJson: row.imagesJson,
+      malId: character.malId,
+      name: character.name,
+      favorites: character.favorites,
+      about: character.about,
+      nicknames: character.nicknames,
+      imagesJson: character.imagesJson,
+      animeAppearances, // [{ malId, name, favorites, imagesJson, role }]
+      mangaAppearances, // [{ malId, name, favorites, imagesJson, role }]
     };
   });
 };

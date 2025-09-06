@@ -3,7 +3,7 @@ import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
 import sensible from "@fastify/sensible";
 import { prisma } from "./db/prisma.js";
-import { adminRoutes } from "./routes/admin.js";
+import { adminRoutes } from "./routes/adminRoutes.js";
 import { characterRoutes } from "./routes/characters.js";
 import { animeRoutes } from "./routes/animes.js";
 import { mangaRoutes } from "./routes/mangas.js";

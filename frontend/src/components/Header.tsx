@@ -35,8 +35,8 @@ export default function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo / Brand */}
           <Link href="/" className="flex items-center gap-2" aria-label="Go to homepage">
-            <div className="h-7 w-7 rounded-lg bg-black dark:bg-white" />
-            <span className="text-xl font-semibold tracking-tight">Anime Characters</span>
+            
+            <span className="text-xl font-semibold tracking-tight">Anime Rater</span>
           </Link>
 
           {/* Desktop nav */}

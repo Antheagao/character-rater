@@ -1,8 +1,6 @@
 "use client";
 
-export default function Pager({
-  page, totalPages, canPrev, canNext, onPrev, onNext, onJump,
-}: {
+interface PagerProps {
   page: number;
   totalPages: number | null;
   canPrev: boolean;
@@ -10,9 +8,21 @@ export default function Pager({
   onPrev: () => void;
   onNext: () => void;
   onJump?: (n: number) => void;
-}) {
+  className?: string; // Add this prop
+}
+
+export default function Pager({
+  page,
+  totalPages,
+  canPrev,
+  canNext,
+  onPrev,
+  onNext,
+  onJump,
+  className = "", // Add with default value
+}: PagerProps) {
   return (
-    <div className="mt-6 flex items-center justify-center gap-2">
+    <div className={`mt-6 flex items-center justify-center gap-2 ${className}`}>
       <button
         onClick={onPrev}
         disabled={!canPrev}

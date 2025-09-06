@@ -6,7 +6,7 @@ import Pager from "@/components/Pager";
 import { usePagedTop } from "@/hooks/usePagedTop";
 import type { MediaType } from "@/lib/types";
 
-const PAGE_SIZE = 50;
+const PAGE_SIZE = 20;
 
 export default function Home() {
   const [kind, setKind] = useState<MediaType>("characters");
@@ -14,6 +14,13 @@ export default function Home() {
     items, page, setPage, loading, error,
     totalPages, canPrev, canNext, nextPage, prevPage,
   } = usePagedTop(kind, PAGE_SIZE);
+
+  const handleKindChange = (newKind: MediaType) => {
+    if (newKind !== kind) {
+      setKind(newKind);
+      setPage(1);
+    }
+  };
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -25,7 +32,7 @@ export default function Home() {
              kind === "anime" ? "Top favorite anime" : "Top favorite manga"}
           </p>
         </div>
-        <TopToolbar value={kind} onChange={(k) => setKind(k)} />
+        <TopToolbar value={kind} onChange={handleKindChange} />
       </div>
 
       {error && (
@@ -36,15 +43,26 @@ export default function Home() {
 
       <MediaGrid items={items} type={kind} loading={loading} />
 
-      <Pager
-        page={page}
-        totalPages={totalPages}
-        canPrev={canPrev}
-        canNext={canNext}
-        onPrev={prevPage}
-        onNext={nextPage}
-        onJump={(n) => setPage(n)}
-      />
+      {!loading && items.length === 0 && !error && (
+        <div className="py-12 text-center">
+          <div className="text-neutral-400 dark:text-neutral-500 mb-2 text-4xl">🔍</div>
+          <p className="text-neutral-500 dark:text-neutral-400">No items found</p>
+        </div>
+      )}
+
+      {/* Handle null totalPages by providing a default value */}
+      {totalPages !== null && totalPages > 1 && (
+        <Pager
+          page={page}
+          totalPages={totalPages}
+          canPrev={canPrev}
+          canNext={canNext}
+          onPrev={prevPage}
+          onNext={nextPage}
+          onJump={(n) => setPage(n)}
+          className="mt-8"
+        />
+      )}
     </main>
   );
 }

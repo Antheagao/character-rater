@@ -2,7 +2,7 @@ import type { FastifyPluginAsync } from "fastify";
 import { prisma } from "../db/prisma.js";
 import type { Prisma } from "@prisma/client";
 
-const ALLOWED_SORT = new Set(["malId", "favorites", "score", "title"]);
+const ALLOWED_SORT = new Set(["malId", "favorites", "score", "title", "popularity", "rank"]);
 const ALLOWED_ORDER = new Set(["asc", "desc"]);
 
 export const animeRoutes: FastifyPluginAsync = async (app) => {
@@ -13,7 +13,7 @@ export const animeRoutes: FastifyPluginAsync = async (app) => {
       limit = 50,
       offset = 0,
     } = (req.query ?? {}) as {
-      sort?: "malId" | "favorites" | "score" | "title";
+      sort?: "malId" | "favorites" | "score" | "title" | "popularity" | "rank";
       order?: "asc" | "desc";
       limit?: number;
       offset?: number;
@@ -31,8 +31,15 @@ export const animeRoutes: FastifyPluginAsync = async (app) => {
         select: {
           malId: true,
           title: true,
+          titleEnglish: true,
+          titleJapanese: true,
           favorites: true,
+          score: true,
+          episodes: true,
+          status: true,
+          type: true,
           imagesJson: true,
+          genres: true,
         },
         take,
         skip,
@@ -41,9 +48,16 @@ export const animeRoutes: FastifyPluginAsync = async (app) => {
 
     const items = rows.map((r) => ({
       malId: r.malId,
-      name: r.title,
+      title: r.title,
+      titleEnglish: r.titleEnglish,
+      titleJapanese: r.titleJapanese,
       favorites: r.favorites,
+      score: r.score,
+      episodes: r.episodes,
+      status: r.status,
+      type: r.type,
       imagesJson: r.imagesJson,
+      genres: r.genres,
     }));
 
     return {
@@ -70,12 +84,25 @@ export const animeRoutes: FastifyPluginAsync = async (app) => {
       select: {
         malId: true,
         title: true,
-        favorites: true,
-        //score: true,
-        //episodes: true,
-        //status: true,
-        //synopsis: true,
+        titleEnglish: true,
+        titleJapanese: true,
+        url: true,
         imagesJson: true,
+        synopsis: true,
+        episodes: true,
+        status: true,
+        type: true,
+        source: true,
+        rating: true,
+        score: true,
+        rank: true,
+        popularity: true,
+        favorites: true,
+        genres: true,
+        studios: true,
+        season: true,
+        year: true,
+        duration: true,
       },
     });
 
@@ -83,13 +110,26 @@ export const animeRoutes: FastifyPluginAsync = async (app) => {
 
     return {
       malId: row.malId,
-      name: row.title,          // map title -> name for UI consistency
-      favorites: row.favorites,
-      //score: row.score,
-      //episodes: row.episodes,
-      //status: row.status,
-      //synopsis: row.synopsis,
+      title: row.title,
+      titleEnglish: row.titleEnglish,
+      titleJapanese: row.titleJapanese,
+      url: row.url,
       imagesJson: row.imagesJson,
+      synopsis: row.synopsis,
+      episodes: row.episodes,
+      status: row.status,
+      type: row.type,
+      source: row.source,
+      rating: row.rating,
+      score: row.score,
+      rank: row.rank,
+      popularity: row.popularity,
+      favorites: row.favorites,
+      genres: row.genres,
+      studios: row.studios,
+      season: row.season,
+      year: row.year,
+      duration: row.duration,
     };
   });
 };

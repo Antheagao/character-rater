@@ -12,43 +12,61 @@ function imgOf(m: MediaItem) {
   );
 }
 
-// format: 17200 -> 17.2k, 1500000 -> 1.5M
 function formatFavorites(n: number): string {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
   if (n >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, "") + "k";
-  return String(n);
+  return n.toLocaleString();
 }
 
-export default function MediaCard({ item, type }: { item: MediaItem; type: MediaType }) {
+interface MediaCardProps {
+  item: MediaItem;
+  type: MediaType;
+  priority?: boolean;
+}
+
+export default function MediaCard({ item, type, priority = false }: MediaCardProps) {
   const href = `/${type}/${item.malId}`;
   const img = imgOf(item);
+
   return (
     <Link
       href={href}
-      className="group rounded-2xl border border-black/5 bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-neutral-900"
+      className="group block rounded-xl border border-gray-200 bg-white p-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800"
     >
-      <div className="relative w-full aspect-[5/7] overflow-hidden rounded-xl bg-neutral-900">
+      {/* Image container */}
+      <div className="relative mb-3 aspect-[5/7] w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-700">
         <Image
           src={img}
           alt={item.name}
           fill
           sizes="(max-width: 640px) 48vw, (max-width: 1024px) 24vw, 18vw"
-          className="object-cover will-change-transform [transform:translateZ(0)] scale-[1.02] group-hover:scale-[1.05] transition-transform duration-300"
+          className="object-cover scale-110 transition-transform duration-500 group-hover:scale-115"
+          priority={priority}
         />
+        
+        {/* Subtle overlay on hover */}
+        <div className="absolute inset-0 bg-black/0 transition-all duration-300 group-hover:bg-black/10" />
       </div>
 
-      <div className="mt-2 flex items-center justify-between">
-        <h3 className="max-w-[70%] truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+      {/* Content */}
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="flex-1 truncate text-sm font-medium text-gray-900 group-hover:text-blue-600 dark:text-gray-100 dark:group-hover:text-blue-400">
           {item.name}
         </h3>
+        
         {typeof item.favorites === "number" && (
-          <span 
-            className="shrink-0 whitespace-nowrap rounded-lg bg-black/5 px-2 py-1 text-[12px] font-semibold text-neutral-700 dark:bg-white/10 dark:text-neutral-200 flex items-center gap-1"
-          >
-            <span aria-hidden>❤️</span>
-            {formatFavorites(item.favorites!)}
+          <span className="flex items-center gap-1 rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-300">
+            <span className="text-red-500">❤️</span>
+            <span>{formatFavorites(item.favorites)}</span>
           </span>
         )}
+      </div>
+
+      {/* Type badge - subtle but informative */}
+      <div className="mt-2">
+        <span className="text-xs font-medium text-gray-500 dark:text-gray-400 capitalize">
+          {type}
+        </span>
       </div>
     </Link>
   );
