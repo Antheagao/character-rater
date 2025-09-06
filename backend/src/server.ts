@@ -5,6 +5,8 @@ import sensible from "@fastify/sensible";
 import { prisma } from "./db/prisma.js";
 import { adminRoutes } from "./routes/admin.js";
 import { characterRoutes } from "./routes/characters.js";
+import { animeRoutes } from "./routes/animes.js";
+import { mangaRoutes } from "./routes/mangas.js";
 
 const server = Fastify({ logger: true });
 
@@ -20,7 +22,9 @@ await server.register(cors, {
 await server.register(helmet);
 await server.register(sensible);
 await server.register(adminRoutes);
-await server.register(characterRoutes)
+await server.register(characterRoutes);
+await server.register(animeRoutes);
+await server.register(mangaRoutes);
 
 // Check health of server
 server.get("/healthz", async () => ({ ok: true }));

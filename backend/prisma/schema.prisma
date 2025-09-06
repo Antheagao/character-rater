@@ -28,6 +28,7 @@ model Character {
   mangaRoles  CharacterManga[]
 
   @@index([name])
+  @@index([favorites])
 } 
 
 // Anime information
