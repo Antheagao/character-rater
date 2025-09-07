@@ -62,16 +62,22 @@ model Like {
 model Comment {
   id          String    @id @default(cuid())
   userId      String
-  characterId Int
+  characterId Int?
+  animeId     Int?
+  mangaId     Int?
   content     String    @db.Text
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   // Relations
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  character Character @relation(fields: [characterId], references: [malId], onDelete: Cascade)
+  character Character? @relation(fields: [characterId], references: [malId], onDelete: Cascade)
+  anime     Anime?     @relation(fields: [animeId], references: [malId], onDelete: Cascade)
+  manga     Manga?     @relation(fields: [mangaId], references: [malId], onDelete: Cascade)
 
   @@index([characterId])
+  @@index([animeId])
+  @@index([mangaId])
   @@index([userId])
   @@index([createdAt])
   @@map("comments")
@@ -129,6 +135,8 @@ model Anime {
   updatedAt   DateTime  @updatedAt
 
   characters  CharacterAnime[]
+  comments    Comment[]
+
   @@index([title])
   @@index([score])
   @@index([rank])
@@ -146,7 +154,6 @@ model Manga {
   titleJapanese String?
   url         String?
   imagesJson  Json
-  // ✅ ADD THESE FIELDS:
   synopsis    String?   @db.Text
   chapters    Int?
   volumes     Int?
@@ -165,6 +172,8 @@ model Manga {
   updatedAt   DateTime  @updatedAt
 
   characters  CharacterManga[]
+  comments    Comment[]
+
   @@index([title])
   @@index([score])
   @@index([rank])

@@ -168,7 +168,13 @@ export default async function authRoutes(fastify: FastifyInstance) {
         return reply.status(404).send({ error: 'User not found' });
       }
 
-      return reply.send({ user });
+      return reply.send({
+        user: {
+          ...user,
+          createdAt: user.createdAt.toISOString(),
+          updatedAt: user.updatedAt.toISOString()
+        }
+      });
     } catch (error) {
       fastify.log.error('Get user error: %s', getErrorMessage(error));
       return reply.status(500).send({ error: 'Internal server error' });

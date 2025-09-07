@@ -4,6 +4,7 @@ import ImageCard from "@/components/detail/ImageCard";
 import QuickFacts from "@/components/detail/QuickFacts";
 import AppearanceGrid from "@/components/detail/AppearanceGrid";
 import Overview from "@/components/detail/Overview";
+import CommentsSection from "@/components/CommentSection";
 
 type Params = { type: "characters" | "anime" | "manga"; id: string };
 
@@ -62,6 +63,7 @@ export default async function DetailPage({ params }: { params: Params }) {
           )}
         </article>
       </section>
+      <CommentsSection type={params.type} itemId={parseInt(params.id)} />
     </main>
   );
 }
