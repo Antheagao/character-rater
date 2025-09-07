@@ -10,8 +10,9 @@ type Params = { type: "characters" | "anime" | "manga"; id: string };
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, "") || "http://localhost:3001";
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  return { title: `Details • ${params.type} • ${params.id}` };
+export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
+  const { type, id } = await params;
+  return { title: `Details • ${type} • ${id}` };
 }
 
 async function fetchDetail(type: Params["type"], id: string) {
@@ -20,11 +21,13 @@ async function fetchDetail(type: Params["type"], id: string) {
   return res.json();
 }
 
-export default async function DetailPage({ params }: { params: Params }) {
-  const data = await fetchDetail(params.type, params.id);
+export default async function DetailPage({ params }: { params: Promise<Params> }) {
+  // Await the params first
+  const { type, id } = await params;
+  const data = await fetchDetail(type, id);
 
   const name: string = data.name ?? data.title ?? `#${data.malId}`;
-  const isCharacter = params.type === "characters";
+  const isCharacter = type === "characters";
   const animeAppearances: any[] = Array.isArray(data.animeAppearances) ? data.animeAppearances : [];
   const mangaAppearances: any[] = Array.isArray(data.mangaAppearances) ? data.mangaAppearances : [];
 
@@ -32,15 +35,15 @@ export default async function DetailPage({ params }: { params: Params }) {
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       <DetailHeader
         title={name}
-        subtitle={`${params.type.toUpperCase()} • MAL #${data.malId}`}
+        subtitle={`${type.toUpperCase()} • MAL #${data.malId}`}
       />
 
       {/* Modern layout with better spacing */}
       <section className="mt-8 grid gap-8 lg:grid-cols-[280px,1fr] lg:gap-12">
         {/* Sidebar with image and facts */}
         <aside className="space-y-6">
-          <ImageCard data={data} name={name} />
-          <QuickFacts type={params.type} data={data} />
+          <ImageCard data={data} name={name} type={type} />
+          <QuickFacts type={type} data={data} />
         </aside>
 
         {/* Main content area */}
@@ -63,7 +66,7 @@ export default async function DetailPage({ params }: { params: Params }) {
           )}
         </article>
       </section>
-      <CommentsSection type={params.type} itemId={parseInt(params.id)} />
+      <CommentsSection type={type} itemId={parseInt(id)} />
     </main>
   );
 }

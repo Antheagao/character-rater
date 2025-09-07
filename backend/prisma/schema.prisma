@@ -44,16 +44,24 @@ model Session {
 model Like {
   id          String    @id @default(cuid())
   userId      String
-  characterId Int
+  characterId Int?
+  animeId     Int?
+  mangaId     Int?
   value       Int
   createdAt   DateTime  @default(now())
 
   // Relations
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  character   Character @relation(fields: [characterId], references: [malId], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  character   Character?  @relation(fields: [characterId], references: [malId], onDelete: Cascade)
+  anime       Anime?      @relation(fields: [animeId], references: [malId], onDelete: Cascade)
+  manga       Manga?      @relation(fields: [mangaId], references: [malId], onDelete: Cascade)  
 
   @@unique([userId, characterId])
+  @@unique([userId, animeId])
+  @@unique([userId, mangaId])
   @@index([characterId])
+  @@index([animeId])
+  @@index([mangaId])
   @@index([userId])
   @@map("likes")
 }
@@ -70,7 +78,7 @@ model Comment {
   updatedAt   DateTime  @updatedAt
 
   // Relations
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   character Character? @relation(fields: [characterId], references: [malId], onDelete: Cascade)
   anime     Anime?     @relation(fields: [animeId], references: [malId], onDelete: Cascade)
   manga     Manga?     @relation(fields: [mangaId], references: [malId], onDelete: Cascade)
@@ -136,6 +144,7 @@ model Anime {
 
   characters  CharacterAnime[]
   comments    Comment[]
+  likes       Like[]
 
   @@index([title])
   @@index([score])
@@ -173,6 +182,7 @@ model Manga {
 
   characters  CharacterManga[]
   comments    Comment[]
+  likes       Like[]
 
   @@index([title])
   @@index([score])

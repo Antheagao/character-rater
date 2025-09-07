@@ -9,6 +9,7 @@ import { mangaRoutes } from "./routes/mangas.js";
 import searchRoutes from "./routes/search.js";
 import authRoutes from "./routes/auth.js";
 import commentRoutes from "./routes/comments.js";
+import likeRoutes from "./routes/likes.js";
 
 const server = Fastify({ logger: true });
 
@@ -31,6 +32,7 @@ await server.register(mangaRoutes);
 server.register(searchRoutes, { prefix: '/api/search' });
 server.register(authRoutes, { prefix: '/api/auth' });
 server.register(commentRoutes, { prefix: '/api/comments' });
+server.register(likeRoutes, { prefix: '/api/likes' });
 
 // Check health of server
 server.get("/healthz", async () => ({ ok: true }));

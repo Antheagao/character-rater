@@ -24,7 +24,49 @@ interface TypeIdParams {
 export default async function commentRoutes(fastify: FastifyInstance) {
   const prisma = new PrismaClient();
 
-  // Get comments for a specific item - FIXED TYPING
+  // Get user's comments - ADDED THIS ENDPOINT
+  fastify.get('/', 
+    { preHandler: [authenticate] },
+    async (request: AuthenticatedRequest, reply: FastifyReply) => {
+      const userId = request.user!.userId;
+
+      try {
+        const comments = await prisma.comment.findMany({
+          where: { userId },
+          include: {
+            character: {
+              select: {
+                malId: true,
+                name: true
+              }
+            },
+            anime: {
+              select: {
+                malId: true,
+                title: true
+              }
+            },
+            manga: {
+              select: {
+                malId: true,
+                title: true
+              }
+            }
+          },
+          orderBy: {
+            createdAt: 'desc'
+          }
+        });
+
+        return reply.send({ comments });
+      } catch (error) {
+        fastify.log.error('Get user comments error: %s', error instanceof Error ? error.message : String(error));
+        return reply.status(500).send({ error: 'Internal server error' });
+      }
+    }
+  );
+
+  // Get comments for a specific item
   fastify.get<{ Params: TypeIdParams }>('/:type/:id', 
     async (request: FastifyRequest<{ Params: TypeIdParams }>, reply: FastifyReply) => {
       const { type, id } = request.params;
@@ -71,7 +113,7 @@ export default async function commentRoutes(fastify: FastifyInstance) {
     }
   );
 
-  // Create a new comment - FIXED TYPING
+  // Create a new comment
   fastify.post<{ Body: CommentRequestBody }>('/', 
     { preHandler: [authenticate] },
     async (request: FastifyRequest<{ Body: CommentRequestBody }>, reply: FastifyReply) => {
@@ -120,7 +162,7 @@ export default async function commentRoutes(fastify: FastifyInstance) {
     }
   );
 
-  // Delete a comment - FIXED TYPING
+  // Delete a comment
   fastify.delete<{ Params: CommentParams }>('/:id', 
     { preHandler: [authenticate] },
     async (request: FastifyRequest<{ Params: CommentParams }>, reply: FastifyReply) => {
