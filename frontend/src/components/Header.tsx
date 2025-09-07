@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useUser } from "@/contexts/UserContext";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { user, logout, loading } = useUser();
 
   // Add a subtle shadow after scrolling a bit
   useEffect(() => {
@@ -14,6 +16,11 @@ export default function Header() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    setOpen(false);
+  };
 
   return (
     <header
@@ -35,7 +42,6 @@ export default function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo / Brand */}
           <Link href="/" className="flex items-center gap-2" aria-label="Go to homepage">
-            
             <span className="text-xl font-semibold tracking-tight">Anime Rater</span>
           </Link>
 
@@ -57,18 +63,42 @@ export default function Header() {
 
           {/* Auth actions (desktop) */}
           <div className="hidden md:flex items-center gap-2">
-            <Link
-              href="/signin"
-              className="rounded-lg px-3 py-2 text-sm hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/signup"
-              className="rounded-lg bg-black px-3 py-2 text-sm text-white transition hover:bg-black/90 focus:outline-none focus:ring-2 focus:ring-black/40 dark:bg-white dark:text-black dark:hover:bg-white/90 dark:focus:ring-white/40"
-            >
-              Sign up
-            </Link>
+            {loading ? (
+              // Loading state
+              <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
+            ) : user ? (
+              // User is logged in
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/profile"
+                  className="rounded-lg px-3 py-2 text-sm hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
+                >
+                  {user.username}
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="rounded-lg px-3 py-2 text-sm hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              // User is not logged in
+              <>
+                <Link
+                  href="/signin"
+                  className="rounded-lg px-3 py-2 text-sm hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/signup"
+                  className="rounded-lg bg-black px-3 py-2 text-sm text-white transition hover:bg-black/90 focus:outline-none focus:ring-2 focus:ring-black/40 dark:bg-white dark:text-black dark:hover:bg-white/90 dark:focus:ring-white/40"
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -79,7 +109,6 @@ export default function Header() {
             onClick={() => setOpen((v) => !v)}
             className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-lg hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
           >
-            {/* simple hamburger / close */}
             <span className="sr-only">Open main menu</span>
             <svg
               viewBox="0 0 24 24"
@@ -124,20 +153,45 @@ export default function Header() {
               Rankings
             </Link>
             <div className="mt-2 flex items-center gap-2">
-              <Link
-                href="/signin"
-                onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-2 text-sm hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
-              >
-                Sign in
-              </Link>
-              <Link
-                href="/signup"
-                onClick={() => setOpen(false)}
-                className="rounded-lg bg-black px-3 py-2 text-sm text-white transition hover:bg-black/90 focus:outline-none focus:ring-2 focus:ring-black/40 dark:bg-white dark:text-black dark:hover:bg-white/90 dark:focus:ring-white/40"
-              >
-                Sign up
-              </Link>
+              {loading ? (
+                <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
+              ) : user ? (
+                <>
+                  <Link
+                    href="/profile"
+                    onClick={() => setOpen(false)}
+                    className="rounded-lg px-3 py-2 text-sm hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
+                  >
+                    {user.username}
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setOpen(false);
+                    }}
+                    className="rounded-lg px-3 py-2 text-sm hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/signin"
+                    onClick={() => setOpen(false)}
+                    className="rounded-lg px-3 py-2 text-sm hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
+                  >
+                    Sign in
+                  </Link>
+                  <Link
+                    href="/signup"
+                    onClick={() => setOpen(false)}
+                    className="rounded-lg bg-black px-3 py-2 text-sm text-white transition hover:bg-black/90 focus:outline-none focus:ring-2 focus:ring-black/40 dark:bg-white dark:text-black dark:hover:bg-white/90 dark:focus:ring-white/40"
+                  >
+                    Sign up
+                  </Link>
+                </>
+              )}
             </div>
           </nav>
         </div>

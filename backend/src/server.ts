@@ -2,12 +2,12 @@ import Fastify from "fastify";
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
 import sensible from "@fastify/sensible";
-import { prisma } from "./db/prisma.js";
 import { adminRoutes } from "./routes/adminRoutes.js";
 import { characterRoutes } from "./routes/characters.js";
 import { animeRoutes } from "./routes/animes.js";
 import { mangaRoutes } from "./routes/mangas.js";
 import searchRoutes from "./routes/search.js";
+import authRoutes from "./routes/auth.js";
 
 const server = Fastify({ logger: true });
 
@@ -19,6 +19,7 @@ await server.register(cors, {
     if (allowed.some(re => re.test(origin))) cb(null, true);
     else cb(new Error("Not allowed by CORS"), false);
   },
+  credentials: true // authentication
 });
 await server.register(helmet);
 await server.register(sensible);
@@ -27,6 +28,7 @@ await server.register(characterRoutes);
 await server.register(animeRoutes);
 await server.register(mangaRoutes);
 server.register(searchRoutes, { prefix: '/api/search' });
+server.register(authRoutes, { prefix: '/api/auth' });
 
 // Check health of server
 server.get("/healthz", async () => ({ ok: true }));

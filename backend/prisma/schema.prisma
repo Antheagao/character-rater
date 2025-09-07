@@ -9,6 +9,74 @@ generator client {
   //output   = "../src/generated/prisma"
 }
 
+// User database information
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  username      String    @unique
+  passwordHash  String    @unique
+  avatar        String?
+  bio           String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  likes         Like[]
+  comments      Comment[]
+  sessions      Session[]
+
+  @@map("users")
+}
+
+// Session management
+model Session {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String    @unique
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+
+  @@map("sessions")
+}
+
+// like | dislike system
+model Like {
+  id          String    @id @default(cuid())
+  userId      String
+  characterId Int
+  value       Int
+  createdAt   DateTime  @default(now())
+
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  character   Character @relation(fields: [characterId], references: [malId], onDelete: Cascade)
+
+  @@unique([userId, characterId])
+  @@index([characterId])
+  @@index([userId])
+  @@map("likes")
+}
+
+// Comment system
+model Comment {
+  id          String    @id @default(cuid())
+  userId      String
+  characterId Int
+  content     String    @db.Text
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  character Character @relation(fields: [characterId], references: [malId], onDelete: Cascade)
+
+  @@index([characterId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("comments")
+}
+
 // Characters Information
 model Character {
   malId       Int       @id 
@@ -26,6 +94,8 @@ model Character {
   // Relations
   animeRoles  CharacterAnime[]
   mangaRoles  CharacterManga[]
+  likes       Like[]
+  comments    Comment[]
 
   @@index([name])
   @@index([favorites])
