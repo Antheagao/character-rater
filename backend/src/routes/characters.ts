@@ -25,7 +25,7 @@ export const characterRoutes: FastifyPluginAsync = async (app) => {
     async (req, reply) => {
       const {
         sort = "malId",
-        order = "asc",
+        order = "desc",
         limit = 20,
         offset = 0,
       } = (req.query ?? {}) as {
