@@ -18,33 +18,33 @@ export default function AppearanceCard({ item, type, priority = false }: Appeara
   const href = `/${type}/${item.malId}`;
   const favs = typeof item.favorites === "number" ? formatCompact(item.favorites) : null;
 
-  // Role color mapping
+  // Enhanced role color mapping
   const getRoleColors = (role: string) => {
     const roleLower = role.toLowerCase();
     
     if (roleLower.includes("main") || roleLower.includes("protagonist")) {
       return {
-        bg: "bg-blue-100 dark:bg-blue-900/40",
-        text: "text-blue-800 dark:text-blue-200",
+        bg: "bg-blue-100 dark:bg-blue-900/30",
+        text: "text-blue-700 dark:text-blue-300",
         border: "border-blue-200 dark:border-blue-700"
       };
     } else if (roleLower.includes("support")) {
       return {
-        bg: "bg-green-100 dark:bg-green-900/40",
-        text: "text-green-800 dark:text-green-200",
-        border: "border-green-200 dark:border-green-700"
+        bg: "bg-emerald-100 dark:bg-emerald-900/30",
+        text: "text-emerald-700 dark:text-emerald-300",
+        border: "border-emerald-200 dark:border-emerald-700"
       };
     } else if (roleLower.includes("antagonist") || roleLower.includes("villain")) {
       return {
-        bg: "bg-red-100 dark:bg-red-900/40",
-        text: "text-red-800 dark:text-red-200",
-        border: "border-red-200 dark:border-red-700"
+        bg: "bg-rose-100 dark:bg-rose-900/30",
+        text: "text-rose-700 dark:text-rose-300", 
+        border: "border-rose-200 dark:border-rose-700"
       };
     }
     
     return {
-      bg: "bg-gray-100 dark:bg-gray-800/40",
-      text: "text-gray-700 dark:text-gray-300",
+      bg: "bg-gray-100 dark:bg-gray-800/30",
+      text: "text-gray-600 dark:text-gray-400",
       border: "border-gray-200 dark:border-gray-700"
     };
   };
@@ -54,7 +54,7 @@ export default function AppearanceCard({ item, type, priority = false }: Appeara
   return (
     <Link
       href={href}
-      className="group block rounded-xl border border-gray-200 bg-white p-4 transition-all hover:border-gray-300 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800/50 dark:hover:border-gray-600"
+      className="group block rounded-xl border border-gray-200 bg-white p-4 transition-all duration-250 hover:border-blue-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800/60 dark:hover:border-blue-400/30"
       prefetch={!priority}
     >
       {/* Header with title and role */}
@@ -73,21 +73,21 @@ export default function AppearanceCard({ item, type, priority = false }: Appeara
       {/* Additional metadata */}
       <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="capitalize font-medium text-gray-700 dark:text-gray-300">
+          <span className="capitalize font-medium text-gray-700 dark:text-gray-300 px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-700/50">
             {type}
           </span>
         </div>
 
         {favs && (
-          <div className="flex items-center gap-1 text-gray-500 dark:text-gray-500 shrink-0">
-            <span className="text-red-500">❤️</span>
-            <span className="font-medium">{favs}</span>
+          <div className="flex items-center gap-1 text-gray-600 dark:text-gray-300 font-medium shrink-0">
+            <span className="text-rose-500">❤️</span>
+            <span>{favs}</span>
           </div>
         )}
       </div>
 
-      {/* Hover indicator */}
-      <div className="mt-3 h-0.5 w-0 bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300 group-hover:w-full" />
+      {/* hover indicator */}
+      <div className="mt-3 h-0.5 w-0 bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 group-hover:w-full" />
     </Link>
   );
 }

@@ -24,7 +24,7 @@ interface TypeIdParams {
 export default async function commentRoutes(fastify: FastifyInstance) {
   const prisma = new PrismaClient();
 
-  // Get user's comments - ADDED THIS ENDPOINT
+  // Get user's comments
   fastify.get('/', 
     { preHandler: [authenticate] },
     async (request: AuthenticatedRequest, reply: FastifyReply) => {

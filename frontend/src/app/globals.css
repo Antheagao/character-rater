@@ -19,8 +19,50 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
+    /* Base colors */
     --background: #0a0a0a;
     --foreground: #ededed;
+    
+    /* Primary colors (brand/accent) */
+    --primary: #3b82f6;      /* Blue - modern and trustworthy */
+    --primary-foreground: #ffffff;
+    
+    /* Secondary colors */
+    --secondary: #8b5cf6;    /* Purple/violet - creative accent */
+    --secondary-foreground: #ffffff;
+    
+    /* Surface colors */
+    --card: #1a1a1a;         /* Slightly lighter than background */
+    --card-foreground: #ededed;
+    --popover: #1a1a1a;
+    --popover-foreground: #ededed;
+    
+    /* Muted colors */
+    --muted: #262626;        /* For subtle backgrounds */
+    --muted-foreground: #a3a3a3;
+    
+    /* Border and input */
+    --border: #404040;       /* Subtle borders */
+    --input: #404040;
+    
+    /* Functional colors */
+    --accent: #3b82f6;       /* Same as primary for consistency */
+    --accent-foreground: #ffffff;
+    
+    /* Success, Warning, Error */
+    --success: #10b981;      /* Emerald green */
+    --warning: #f59e0b;      /* Amber */
+    --error: #ef4444;        /* Red */
+    
+    /* Ring (focus outlines) */
+    --ring: #3b82f6;
+    
+    /* Chart colors (if needed) */
+    --chart-1: #3b82f6;
+    --chart-2: #8b5cf6;
+    --chart-3: #ec4899;
+    --chart-4: #f59e0b;
+    --chart-5: #10b981;
   }
 }
 

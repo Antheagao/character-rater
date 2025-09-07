@@ -11,7 +11,7 @@ interface LikeCounts {
 }
 
 interface UserInteraction {
-  userInteraction: number; // 0 = none, 1 = like, -1 = dislike
+  userInteraction: number;
 }
 
 export default function ImageCard({
@@ -79,7 +79,7 @@ export default function ImageCard({
     setLoading(true);
     try {
       const body: any = { value };
-      body[`${type.slice(0, -1)}Id`] = data.malId; // characterId, animeId, or mangaId
+      body[`${type.slice(0, -1)}Id`] = data.malId;
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/likes`, {
         method: 'POST',
@@ -91,7 +91,6 @@ export default function ImageCard({
       });
 
       if (response.ok) {
-        // Refresh both counts and user interaction
         fetchLikeCounts();
         fetchUserInteraction();
       }
@@ -102,74 +101,83 @@ export default function ImageCard({
     }
   };
 
-  // Determine like/dislike button colors based on user interaction
   const likeButtonClass = userInteraction === 1 
-    ? "text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400" 
-    : "text-gray-500 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300";
+    ? "text-blue-600 bg-blue-50 border-blue-200 dark:text-blue-400 dark:bg-blue-900/30 dark:border-blue-700" 
+    : "text-gray-600 bg-gray-100 border-gray-200 hover:bg-gray-200 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700";
 
   const dislikeButtonClass = userInteraction === -1 
-    ? "text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-400" 
-    : "text-gray-500 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300";
+    ? "text-red-600 bg-red-50 border-red-200 dark:text-red-400 dark:bg-red-900/30 dark:border-red-700" 
+    : "text-gray-600 bg-gray-100 border-gray-200 hover:bg-gray-200 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700";
 
   return (
-    <div className="relative mx-auto w-full max-w-xs overflow-hidden rounded-xl bg-neutral-900 shadow-md">
-      <Image
-        src={img}
-        alt={name}
-        width={240}
-        height={336}
-        className="h-auto w-full object-cover"
-        priority
-      />
-      
-      {/* Favorites badge */}
-      {favs && (
-        <span className="absolute left-2 top-2 rounded-full bg-black/70 px-2 py-1 text-xs text-white backdrop-blur dark:bg-white/20 dark:text-white">
-          ❤️ {favs}
-        </span>
-      )}
-
-      {/* Like/Dislike buttons */}
-      <div className="absolute bottom-2 left-2 right-2 flex gap-2">
-        {/* Like button */}
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handleLike(1);
-          }}
-          disabled={loading || !user}
-          className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium transition-colors ${likeButtonClass} backdrop-blur-sm`}
-          title={user ? "Like" : "Sign in to like"}
-        >
-          <span>🔼</span>
-          <span>{likeCounts.likes}</span>
-        </button>
-
-        {/* Dislike button */}
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handleLike(-1);
-          }}
-          disabled={loading || !user}
-          className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium transition-colors ${dislikeButtonClass} backdrop-blur-sm`}
-          title={user ? "Dislike" : "Sign in to dislike"}
-        >
-          <span>🔽</span>
-          <span>{likeCounts.dislikes}</span>
-        </button>
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden w-full max-w-xs mx-auto">
+      {/* Smaller image container */}
+      <div className="relative aspect-[5/7] w-full overflow-hidden rounded-lg bg-neutral-900">
+        <Image
+          src={img}
+          alt={name}
+          fill
+          className="object-cover scale-110"
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+        />
       </div>
 
-      {/* User interaction indicator */}
-      {userInteraction !== 0 && (
-        <div className="absolute top-2 right-2">
-          <span className="rounded-full bg-black/70 px-2 py-1 text-xs text-white backdrop-blur dark:bg-white/20 dark:text-white">
-            {userInteraction === 1 ? "👍 Liked" : "👎 Disliked"}
-          </span>
+      <div className="p-4 space-y-3">
+        {/* Favorites count*/}
+        {favs && (
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-sm text-gray-700 dark:text-gray-300">
+              <span className="text-red-500">❤️</span>
+              <span className="font-medium">{favs} favorites</span>
+            </div>
+            
+            {/* User interaction indicator */}
+            {userInteraction !== 0 && (
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
+                {userInteraction === 1 ? "Liked" : "Disliked"}
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Like/Dislike buttons */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              handleLike(1);
+            }}
+            disabled={loading || !user}
+            className={`flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition-all duration-200 ${likeButtonClass}`}
+            title={user ? "Like" : "Sign in to like"}
+          >
+            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+            </svg>
+            <span className="font-semibold">{likeCounts.likes}</span>
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              handleLike(-1);
+            }}
+            disabled={loading || !user}
+            className={`flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition-all duration-200 ${dislikeButtonClass}`}
+            title={user ? "Dislike" : "Sign in to dislike"}
+          >
+            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M18 9.5a1.5 1.5 0 11-3 0v-6a1.5 1.5 0 013 0v6zM14 9.667v-5.43a2 2 0 00-1.106-1.79l-.05-.025A4 4 0 0011.057 2H5.64a2 2 0 00-1.962 1.608l-1.2 6A2 2 0 004.44 12H8v4a2 2 0 002 2 1 1 0 001-1v-.667a4 4 0 01.8-2.4l1.4-1.866a4 4 0 00.8-2.4z" />
+            </svg>
+            <span className="font-semibold">{likeCounts.dislikes}</span>
+          </button>
         </div>
-      )}
+
+        {/* Type indicator */}
+        <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+          {type}
+        </div>
+      </div>
     </div>
   );
 }

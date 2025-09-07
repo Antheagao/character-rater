@@ -26,7 +26,7 @@ interface LikeCounts {
 }
 
 interface UserInteraction {
-  userInteraction: number; // 0 = none, 1 = like, -1 = dislike
+  userInteraction: number;
 }
 
 interface MediaCardProps {
@@ -44,7 +44,6 @@ export default function MediaCard({ item, type, priority = false }: MediaCardPro
   const [userInteraction, setUserInteraction] = useState<number>(0);
   const [loading, setLoading] = useState(false);
 
-  // Get the display name - use title if available, fall back to name
   const displayName = item.title || item.name || `#${item.malId}`;
 
   useEffect(() => {
@@ -95,7 +94,7 @@ export default function MediaCard({ item, type, priority = false }: MediaCardPro
     setLoading(true);
     try {
       const body: any = { value };
-      body[`${type.slice(0, -1)}Id`] = item.malId; // characterId, animeId, or mangaId
+      body[`${type.slice(0, -1)}Id`] = item.malId;
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/likes`, {
         method: 'POST',
@@ -107,7 +106,6 @@ export default function MediaCard({ item, type, priority = false }: MediaCardPro
       });
 
       if (response.ok) {
-        // Refresh both counts and user interaction
         fetchLikeCounts();
         fetchUserInteraction();
       }
@@ -118,14 +116,13 @@ export default function MediaCard({ item, type, priority = false }: MediaCardPro
     }
   };
 
-  // Determine like/dislike button colors based on user interaction
   const likeButtonClass = userInteraction === 1 
-    ? "text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400" 
-    : "text-gray-500 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300";
+    ? "text-blue-600 bg-blue-50 border-blue-200 dark:text-blue-400 dark:bg-blue-900/30 dark:border-blue-800" 
+    : "text-gray-600 bg-gray-100 border-gray-200 hover:bg-gray-200 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700";
 
   const dislikeButtonClass = userInteraction === -1 
-    ? "text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-400" 
-    : "text-gray-500 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300";
+    ? "text-red-600 bg-red-50 border-red-200 dark:text-red-400 dark:bg-red-900/30 dark:border-red-800" 
+    : "text-gray-600 bg-gray-100 border-gray-200 hover:bg-gray-200 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700";
 
   return (
     <Link
@@ -171,11 +168,13 @@ export default function MediaCard({ item, type, priority = false }: MediaCardPro
             handleLike(1);
           }}
           disabled={loading || !user}
-          className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium transition-colors ${likeButtonClass}`}
-          title={user ? "Like" : "Sign in to like"}
+          className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-all duration-200 ${likeButtonClass}`}
+          title={userInteraction === 1 ? "Remove like" : "Like"}
         >
-          <span>🔼</span>
-          <span>{likeCounts.likes}</span>
+          <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+          </svg>
+          <span className="font-semibold">{likeCounts.likes}</span>
         </button>
 
         {/* Dislike button */}
@@ -186,29 +185,22 @@ export default function MediaCard({ item, type, priority = false }: MediaCardPro
             handleLike(-1);
           }}
           disabled={loading || !user}
-          className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium transition-colors ${dislikeButtonClass}`}
-          title={user ? "Dislike" : "Sign in to dislike"}
+          className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-all duration-200 ${dislikeButtonClass}`}
+          title={userInteraction === -1 ? "Remove dislike" : "Dislike"}
         >
-          <span>🔽</span>
-          <span>{likeCounts.dislikes}</span>
+          <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M18 9.5a1.5 1.5 0 11-3 0v-6a1.5 1.5 0 013 0v6zM14 9.667v-5.43a2 2 0 00-1.106-1.79l-.05-.025A4 4 0 0011.057 2H5.64a2 2 0 00-1.962 1.608l-1.2 6A2 2 0 004.44 12H8v4a2 2 0 002 2 1 1 0 001-1v-.667a4 4 0 01.8-2.4l1.4-1.866a4 4 0 00.8-2.4z" />
+          </svg>
+          <span className="font-semibold">{likeCounts.dislikes}</span>
         </button>
       </div>
 
-      {/* Type badge - subtle but informative */}
+      {/* Type badge */}
       <div className="mt-2">
         <span className="text-xs font-medium text-gray-500 dark:text-gray-400 capitalize">
           {type}
         </span>
       </div>
-
-      {/* User interaction indicator */}
-      {userInteraction !== 0 && (
-        <div className="mt-1">
-          <span className="text-xs text-gray-500 dark:text-gray-400">
-            {userInteraction === 1 ? "You liked this" : "You disliked this"}
-          </span>
-        </div>
-      )}
     </Link>
   );
 }

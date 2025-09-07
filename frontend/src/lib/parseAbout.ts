@@ -10,7 +10,7 @@ const FACT_LABELS = [
   "Eye Color", "Voice Actor", "Seiyuu", "Rank", "Class", "Weapon",
   "Abilities", "Powers", "Relatives", "Family", "Likes", "Dislikes",
   "Birthplace", "Nationality", "Debut", "Zodiac", "Horoscope",
-  "Known Relatives", "Theme Song" // Added these from your example
+  "Known Relatives", "Theme Song"
 ];
 
 // Regex for colon format: "Label: value"

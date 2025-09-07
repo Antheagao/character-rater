@@ -63,7 +63,7 @@ export default function AppearanceGrid({
             key={`${type}-${item.malId}-${index}`}
             item={item}
             type={type}
-            priority={index < 4} // Prioritize first 4 items for better LCP
+            priority={index < 4}
           />
         ))}
       </div>

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import type { MediaType } from "@/lib/types"; // Keep this if the path is correct
+import type { MediaType } from "@/lib/types";
 
 interface SearchResult {
   malId: number;
@@ -28,11 +28,8 @@ export default function SearchBar() {
     setIsLoading(true);
     try {
       const apiUrl = `${API_BASE_URL}/api/search?q=${encodeURIComponent(searchQuery)}`;
-      console.log('Fetching from:', apiUrl); // For debugging
-      
       const response = await fetch(apiUrl);
       
-      // Check if response is OK
       if (!response.ok) {
         throw new Error(`Search failed: ${response.status} ${response.statusText}`);
       }
@@ -47,7 +44,6 @@ export default function SearchBar() {
     }
   };
 
-  // Debounce the search to avoid excessive API calls
   useEffect(() => {
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
@@ -56,7 +52,7 @@ export default function SearchBar() {
     if (query.trim()) {
       debounceRef.current = setTimeout(() => {
         search(query);
-      }, 300); // 300ms debounce
+      }, 300);
     } else {
       setResults([]);
     }
@@ -82,13 +78,13 @@ export default function SearchBar() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search characters, anime, manga..."
-          className="w-full rounded-full border border-gray-300 bg-white py-2 pl-4 pr-10 text-sm placeholder-gray-500 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
+          className="w-full rounded-full border border-border bg-background py-2.5 pl-4 pr-12 text-sm placeholder-muted-foreground shadow-sm transition-all duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 focus:ring-offset-background hover:border-border/70"
         />
         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
           {isLoading ? (
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"></div>
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
           ) : (
-            <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           )}
@@ -97,32 +93,34 @@ export default function SearchBar() {
 
       {/* Search results dropdown */}
       {results.length > 0 && (
-        <div className="absolute top-full z-50 mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
+        <div className="absolute top-full z-50 mt-2 w-full rounded-xl border border-border bg-background/95 shadow-2xl backdrop-blur-sm transition-all duration-200 animate-in fade-in-80">
           {results.map((result) => (
             <button
               key={`${result.type}-${result.malId}`}
               onClick={() => handleSelect(result)}
-              className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700"
+              className="flex w-full items-center gap-3 px-4 py-3 text-left transition-all duration-150 hover:bg-accent/50 first:rounded-t-xl last:rounded-b-xl"
             >
               {result.imageUrl && (
                 <img
                   src={result.imageUrl}
                   alt=""
-                  className="h-10 w-10 rounded object-cover"
+                  className="h-10 w-10 rounded-lg object-cover transition-transform duration-200 group-hover:scale-105"
                   onError={(e) => {
-                    // Hide image if it fails to load
                     e.currentTarget.style.display = 'none';
                   }}
                 />
               )}
               <div className="flex-1 min-w-0">
-                <div className="truncate text-sm font-medium text-gray-900 dark:text-white">
+                <div className="truncate text-sm font-medium text-foreground group-hover:text-primary transition-colors">
                   {result.name}
                 </div>
-                <div className="text-xs capitalize text-gray-500 dark:text-gray-400">
+                <div className="text-xs capitalize text-muted-foreground">
                   {result.type}
                 </div>
               </div>
+              <svg className="h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </button>
           ))}
         </div>

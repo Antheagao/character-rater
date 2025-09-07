@@ -90,7 +90,7 @@ export const characterRoutes: FastifyPluginAsync = async (app) => {
 
     const { rolesLimit = 20 } = (req.query ?? {}) as { rolesLimit?: number };
 
-    // 1) Character core fields
+    // Character core fields
     const character = await prisma.character.findUnique({
       where: { malId: id },
       select: {
@@ -105,7 +105,7 @@ export const characterRoutes: FastifyPluginAsync = async (app) => {
 
     if (!character) return reply.code(404).send({ error: "Not found" });
 
-    // 2) Anime appearances (via join table), ordered by anime.favorites desc
+    // Anime appearances (via join table), ordered by anime.favorites desc
     const [animeRoles, mangaRoles] = await Promise.all([
       prisma.characterAnime.findMany({
         where: { characterId: id },
@@ -139,7 +139,7 @@ export const characterRoutes: FastifyPluginAsync = async (app) => {
       }),
     ]);
 
-    // 3) Shape for frontend (normalize title -> name for consistency, include role)
+    // Shape for frontend (normalize title -> name for consistency, include role)
     const animeAppearances = animeRoles
       .filter(r => r.anime) // guard just in case
       .map(r => ({
@@ -160,7 +160,7 @@ export const characterRoutes: FastifyPluginAsync = async (app) => {
         role: r.role,
       }));
 
-    // 4) Return single, consistent payload
+    // Return single, consistent payload
     return {
       malId: character.malId,
       name: character.name,

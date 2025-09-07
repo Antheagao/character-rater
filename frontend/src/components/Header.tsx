@@ -9,7 +9,6 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const { user, logout, loading } = useUser();
 
-  // Add a subtle shadow after scrolling a bit
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 4);
     onScroll();
@@ -25,75 +24,67 @@ export default function Header() {
   return (
     <header
       className={[
-        "sticky top-0 z-50 border-b border-black/5 bg-white/70 backdrop-blur-sm",
-        "dark:bg-neutral-900/70 dark:border-white/10",
-        scrolled ? "shadow-sm" : "",
+        "sticky top-0 z-50 border-b border-border/50",
+        "bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60",
+        "transition-all duration-300 ease-out",
+        scrolled ? "shadow-lg shadow-black/5" : "",
       ].join(" ")}
     >
-      {/* Skip link for a11y */}
+      {/* Skip link */}
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:inset-x-0 focus:top-2 focus:mx-auto focus:w-max rounded bg-black px-3 py-1 text-white dark:bg-white dark:text-black"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-full focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:shadow-lg focus:ring-2 focus:ring-primary/50"
       >
         Skip to content
       </a>
 
       <div className="mx-auto max-w-screen-xl px-4">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo / Brand */}
-          <Link href="/" className="flex items-center gap-2" aria-label="Go to homepage">
-            <span className="text-xl font-semibold tracking-tight">Anime Rater</span>
+          {/* Logo subtle hover effect */}
+          <Link 
+            href="/" 
+            className="group flex items-center gap-2" 
+            aria-label="Go to homepage"
+          >
+            <span className="text-xl font-semibold tracking-tight text-foreground transition-transform duration-200 group-hover:scale-105">
+              Anime Rater
+            </span>
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-1">
-            <Link
-              href="/browse"
-              className="rounded-lg px-3 py-2 text-sm hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
-            >
-              Browse
-            </Link>
-            <Link
-              href="/rankings"
-              className="rounded-lg px-3 py-2 text-sm hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
-            >
-              Rankings
-            </Link>
-          </nav>
+          <nav className="hidden md:flex items-center gap-1"></nav>
 
-          {/* Auth actions (desktop) */}
-          <div className="hidden md:flex items-center gap-2">
+          {/* Auth actions*/}
+          <div className="hidden md:flex items-center gap-3">
             {loading ? (
-              // Loading state
-              <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
+              // skeleton with shimmer
+              <div className="h-9 w-9 rounded-full bg-gradient-to-r from-muted via-border/20 to-muted bg-[length:200%_100%] animate-shimmer" />
             ) : user ? (
-              // User is logged in
               <div className="flex items-center gap-3">
                 <Link
                   href="/profile"
-                  className="rounded-lg px-3 py-2 text-sm hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
+                  className="rounded-lg px-4 py-2 text-sm text-foreground transition-all duration-200 hover:bg-accent/10 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/40"
                 >
                   {user.username}
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="rounded-lg px-3 py-2 text-sm hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
+                  className="rounded-lg px-4 py-2 text-sm text-foreground transition-all duration-200 hover:bg-accent/10 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/40"
                 >
                   Logout
                 </button>
               </div>
             ) : (
-              // User is not logged in
               <>
                 <Link
                   href="/signin"
-                  className="rounded-lg px-3 py-2 text-sm hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
+                  className="rounded-lg px-4 py-2 text-sm text-foreground transition-all duration-200 hover:bg-accent/10 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/40"
                 >
                   Sign in
                 </Link>
                 <Link
                   href="/signup"
-                  className="rounded-lg bg-black px-3 py-2 text-sm text-white transition hover:bg-black/90 focus:outline-none focus:ring-2 focus:ring-black/40 dark:bg-white dark:text-black dark:hover:bg-white/90 dark:focus:ring-white/40"
+                  className="rounded-lg bg-gradient-to-r from-primary to-primary/80 px-4 py-2 text-sm text-primary-foreground transition-all duration-300 hover:from-primary/90 hover:to-primary hover:shadow-lg hover:shadow-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/40"
                 >
                   Sign up
                 </Link>
@@ -107,69 +98,37 @@ export default function Header() {
             aria-label="Toggle menu"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-lg hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
+            className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-lg text-foreground transition-all duration-200 hover:bg-accent/10 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary/40"
           >
             <span className="sr-only">Open main menu</span>
-            <svg
-              viewBox="0 0 24 24"
-              className={`h-5 w-5 ${open ? "hidden" : "block"}`}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
+            {/* Animated hamburger icon */}
+            <svg viewBox="0 0 24 24" className={`h-5 w-5 transition-transform duration-200 ${open ? "hidden" : "block"}`} fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M3 6h18M3 12h18M3 18h18" />
             </svg>
-            <svg
-              viewBox="0 0 24 24"
-              className={`h-5 w-5 ${open ? "block" : "hidden"}`}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
+            <svg viewBox="0 0 24 24" className={`h-5 w-5 transition-transform duration-200 ${open ? "block" : "hidden"}`} fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M6 6l12 12M6 18L18 6" />
             </svg>
           </button>
         </div>
 
-        {/* Mobile menu panel */}
-        <div
-          className={`md:hidden overflow-hidden transition-[max-height,opacity] ${
-            open ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
-          }`}
-        >
-          <nav className="flex flex-col gap-1 pb-3 pt-2">
-            <Link
-              href="/browse"
-              onClick={() => setOpen(false)}
-              className="rounded-lg px-3 py-2 text-sm hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
-            >
-              Browse
-            </Link>
-            <Link
-              href="/rankings"
-              onClick={() => setOpen(false)}
-              className="rounded-lg px-3 py-2 text-sm hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
-            >
-              Rankings
-            </Link>
-            <div className="mt-2 flex items-center gap-2">
+        {/* Mobile menu */}
+        <div className={`md:hidden overflow-hidden transition-all duration-300 ease-out ${open ? "max-h-64 opacity-100" : "max-h-0 opacity-0"}`}>
+          <nav className="flex flex-col gap-2 pb-4 pt-3">
+            <div className="flex flex-col gap-2">
               {loading ? (
-                <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
+                <div className="h-10 rounded-lg bg-gradient-to-r from-muted via-border/20 to-muted bg-[length:200%_100%] animate-shimmer" />
               ) : user ? (
                 <>
                   <Link
                     href="/profile"
                     onClick={() => setOpen(false)}
-                    className="rounded-lg px-3 py-2 text-sm hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
+                    className="rounded-lg px-4 py-3 text-foreground transition-all duration-200 hover:bg-accent/10 focus:outline-none focus:ring-2 focus:ring-primary/40"
                   >
                     {user.username}
                   </Link>
                   <button
-                    onClick={() => {
-                      handleLogout();
-                      setOpen(false);
-                    }}
-                    className="rounded-lg px-3 py-2 text-sm hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
+                    onClick={handleLogout}
+                    className="rounded-lg px-4 py-3 text-left text-foreground transition-all duration-200 hover:bg-accent/10 focus:outline-none focus:ring-2 focus:ring-primary/40"
                   >
                     Logout
                   </button>
@@ -179,14 +138,14 @@ export default function Header() {
                   <Link
                     href="/signin"
                     onClick={() => setOpen(false)}
-                    className="rounded-lg px-3 py-2 text-sm hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-black/30 dark:hover:bg-white/10 dark:focus:ring-white/30"
+                    className="rounded-lg px-4 py-3 text-foreground transition-all duration-200 hover:bg-accent/10 focus:outline-none focus:ring-2 focus:ring-primary/40"
                   >
                     Sign in
                   </Link>
                   <Link
                     href="/signup"
                     onClick={() => setOpen(false)}
-                    className="rounded-lg bg-black px-3 py-2 text-sm text-white transition hover:bg-black/90 focus:outline-none focus:ring-2 focus:ring-black/40 dark:bg-white dark:text-black dark:hover:bg-white/90 dark:focus:ring-white/40"
+                    className="rounded-lg bg-gradient-to-r from-primary to-primary/80 px-4 py-3 text-primary-foreground transition-all duration-300 hover:from-primary/90 hover:to-primary hover:shadow-lg hover:shadow-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/40"
                   >
                     Sign up
                   </Link>

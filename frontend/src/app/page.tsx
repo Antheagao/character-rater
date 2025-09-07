@@ -25,14 +25,18 @@ export default function Home() {
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-      {/* Search Bar component */}
-      <div className="mb-8 flex justify-center">
+      {/* Search Bar with subtle animation */}
+      <div className="mb-8 flex justify-center animate-fade-in">
         <SearchBar />
       </div>
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+
+      {/* Header section with smooth transitions */}
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between transition-all duration-200">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Top Lists</h1>
-          <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl text-foreground">
+            Top Lists
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             {kind === "characters" ? "Top favorite characters" :
              kind === "anime" ? "Top favorite anime" : "Top favorite manga"}
           </p>
@@ -40,22 +44,30 @@ export default function Home() {
         <TopToolbar value={kind} onChange={handleKindChange} />
       </div>
 
+      {/* Error state */}
       {error && (
-        <p className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-300">
-          {error}
-        </p>
-      )}
-
-      <MediaGrid items={items} type={kind} loading={loading} />
-
-      {!loading && items.length === 0 && !error && (
-        <div className="py-12 text-center">
-          <div className="text-neutral-400 dark:text-neutral-500 mb-2 text-4xl">🔍</div>
-          <p className="text-neutral-500 dark:text-neutral-400">No items found</p>
+        <div className="mb-6 rounded-xl border border-error/20 bg-error/10 p-4 text-error animate-fade-in">
+          <div className="flex items-center gap-2">
+            <span className="text-lg">⚠️</span>
+            <p className="text-sm font-medium">{error}</p>
+          </div>
         </div>
       )}
 
-      {/* Handle null totalPages by providing a default value */}
+      {/* Main content grid */}
+      <MediaGrid items={items} type={kind} loading={loading} />
+
+      {/* Empty state */}
+      {!loading && items.length === 0 && !error && (
+        <div className="py-16 text-center animate-fade-in">
+          <div className="text-muted-foreground mb-4 text-6xl opacity-60">🔍</div>
+          <p className="text-muted-foreground text-lg font-medium">No items found</p>
+          <p className="text-muted-foreground/70 text-sm mt-1">
+            Try adjusting your search or filters
+          </p>
+        </div>
+      )}
+
       {totalPages !== null && totalPages > 1 && (
         <Pager
           page={page}
@@ -65,7 +77,7 @@ export default function Home() {
           onPrev={prevPage}
           onNext={nextPage}
           onJump={(n) => setPage(n)}
-          className="mt-8"
+          className="mt-8 animate-fade-in"
         />
       )}
     </main>

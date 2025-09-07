@@ -22,7 +22,6 @@ async function fetchDetail(type: Params["type"], id: string) {
 }
 
 export default async function DetailPage({ params }: { params: Promise<Params> }) {
-  // Await the params first
   const { type, id } = await params;
   const data = await fetchDetail(type, id);
 
@@ -38,7 +37,6 @@ export default async function DetailPage({ params }: { params: Promise<Params> }
         subtitle={`${type.toUpperCase()} • MAL #${data.malId}`}
       />
 
-      {/* Modern layout with better spacing */}
       <section className="mt-8 grid gap-8 lg:grid-cols-[280px,1fr] lg:gap-12">
         {/* Sidebar with image and facts */}
         <aside className="space-y-6">
