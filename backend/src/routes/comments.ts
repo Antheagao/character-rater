@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { PrismaClient } from '@prisma/client';
 import { authenticate, AuthenticatedRequest } from '../auth/middleware.js';
+import { prisma } from "../db/prisma.js";
 
 // Interface for request body
 interface CommentRequestBody {
@@ -22,8 +22,6 @@ interface TypeIdParams {
 }
 
 export default async function commentRoutes(fastify: FastifyInstance) {
-  const prisma = new PrismaClient();
-
   // Get user's comments
   fastify.get('/', 
     { preHandler: [authenticate] },

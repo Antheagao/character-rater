@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { PrismaClient } from '@prisma/client';
 import { authenticate, AuthenticatedRequest } from '../auth/middleware.js';
+import { prisma } from "../db/prisma.js";
 
 // Interfaces for request body and parameters
 interface LikeRequestBody {
@@ -20,8 +20,6 @@ interface LikeParams {
 }
 
 export default async function likeRoutes(fastify: FastifyInstance) {
-  const prisma = new PrismaClient();
-
   // Get user's likes and dislikes
   fastify.get('/', 
     { preHandler: [authenticate] },

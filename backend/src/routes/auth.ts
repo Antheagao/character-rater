@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { PrismaClient } from '@prisma/client';
 import { hashPassword, verifyPassword, generateToken, JWTPayload } from '../auth/utils.js';
 import { authenticate, AuthenticatedRequest } from '../auth/middleware.js';
+import { prisma } from '../db/prisma.js'
 
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {
@@ -22,8 +22,6 @@ interface RegisterRequest {
 }
 
 export default async function authRoutes(fastify: FastifyInstance) {
-  const prisma = new PrismaClient();
-
   // Register endpoint
   fastify.post<{ Body: RegisterRequest }>('/register', async (request: FastifyRequest<{ Body: RegisterRequest }>, reply: FastifyReply) => {
     const { email, username, password } = request.body;

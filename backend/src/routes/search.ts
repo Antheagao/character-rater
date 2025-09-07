@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from "../db/prisma.js";
 
 interface SearchQuery {
   q: string;
@@ -28,8 +28,6 @@ function getErrorStack(error: unknown): string | undefined {
 }
 
 export default async function searchRoutes(fastify: FastifyInstance) {
-  const prisma = new PrismaClient();
-
   // Search endpoint
   fastify.get<{
     Querystring: SearchQuery
