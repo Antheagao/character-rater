@@ -17,7 +17,7 @@ export class CharacterETLService extends BaseETLService<any> {
       about: data.about || null,
       nicknames: data.nicknames || [],
       imagesJson: data.images || {},
-      favorites: data.favorites || null,
+      favorites: data.favorites || 0,
       rawJson: data,
     };
   }
@@ -30,7 +30,7 @@ export class CharacterETLService extends BaseETLService<any> {
       about: data.about || null,
       nicknames: data.nicknames || [],
       imagesJson: data.images || {},
-      favorites: data.favorites || null,
+      favorites: data.favorites || 0,
       rawJson: data,
     };
   }
