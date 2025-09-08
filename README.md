@@ -26,12 +26,15 @@ Users can sign in, like/dislike entries, leave comments, and view top favorites 
 
 
 ```markdown
-![Home Page](https://github.com/Antheagao/character-rater/tree/master/screenshots/character-rater-ss-1.png)
-![Character Detail](https://github.com/Antheagao/character-rater/tree/master/screenshots/character-rater-ss-2.png)
-![Character Detail](https://github.com/Antheagao/character-rater/tree/master/screenshots/character-rater-ss-3.png)
-![Character Detail](https://github.com/Antheagao/character-rater/tree/master/screenshots/character-rater-ss-4.png)
-![Profile](https://github.com/Antheagao/character-rater/tree/master/screenshots/character-rater-ss-5.png)
-![Comments](https://github.com/Antheagao/character-rater/tree/master/screenshots/character-rater-ss-6.png)
+<img src="./screenshots/character-rater-ss-1.png" width="400" alt="Home Page">
+<img src="./screenshots/character-rater-ss-2.png" width="400" alt="Character Detail">
+<br>
+<img src="./screenshots/character-rater-ss-3.png" width="400" alt="Character Detail">
+<img src="./screenshots/character-rater-ss-4.png" width="400" alt="Character Detail">
+<br>
+<img src="./screenshots/character-rater-ss-5.png" width="400" alt="Profile">
+<img src="./screenshots/character-rater-ss-6.png" width="400" alt="Comments">
+
 
 
 
