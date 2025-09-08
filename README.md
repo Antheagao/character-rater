@@ -33,3 +33,4 @@ Users can sign in, like/dislike entries, leave comments, and view top favorites 
 ![Profile](./screenshots/character-rater-ss-5.png)
 ![Comments](./screenshots/character-rater-ss-6.png)
 
+
