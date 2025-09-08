@@ -20,6 +20,27 @@ Users can sign in, like/dislike entries, leave comments, and view top favorites 
 **Database**: PostgreSQL ([Supabase](https://supabase.com/))  
 **Deployment**: Frontend → Vercel • Backend → Render • Database → Supabase  
 
+
+---
+
+## 📡 API References
+
+This project relies on the [Jikan API](https://docs.api.jikan.moe/) (MyAnimeList unofficial API) for fetching anime, manga, and character data.  
+
+Key endpoints used:
+
+- **Characters**
+  - `GET /characters/{id}/full` → Fetch full details of a character (bio, nicknames, favorites, appearances).
+  - `GET /characters?page={n}` → Paginated list of characters.
+
+- **Anime**
+  - `GET /anime/{id}` → Fetch full details of an anime (title, score, rank, popularity, favorites, images).
+  - `GET /anime?page={n}` → Paginated list of anime.
+
+- **Manga**
+  - `GET /manga/{id}` → Fetch full details of a manga (title, score, rank, popularity, favorites, images).
+  - `GET /manga?page={n}` → Paginated list of manga.
+
 ---
 
 ## 📸 Screenshots
@@ -59,6 +80,7 @@ Users can sign in, like/dislike entries, leave comments, and view top favorites 
 <img src="./screenshots/searchbar.png" width="1000" alt="searchbar">
 <em>Search for anime details</em>
 <br><br>
+
 
 
 
