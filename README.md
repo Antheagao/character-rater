@@ -26,11 +26,12 @@ Users can sign in, like/dislike entries, leave comments, and view top favorites 
 
 
 ```markdown
-![Home Page](./screenshots/character-rater-ss-1.png)
-![Character Detail](./screenshots/character-rater-ss-2.png)
-![Character Detail](./screenshots/character-rater-ss-3.png)
-![Character Detail](./screenshots/character-rater-ss-4.png)
-![Profile](./screenshots/character-rater-ss-5.png)
-![Comments](./screenshots/character-rater-ss-6.png)
+![Home Page](https://github.com/Antheagao/character-rater/tree/master/screenshots/character-rater-ss-1.png)
+![Character Detail](https://github.com/Antheagao/character-rater/tree/master/screenshots/character-rater-ss-2.png)
+![Character Detail](https://github.com/Antheagao/character-rater/tree/master/screenshots/character-rater-ss-3.png)
+![Character Detail](https://github.com/Antheagao/character-rater/tree/master/screenshots/character-rater-ss-4.png)
+![Profile](https://github.com/Antheagao/character-rater/tree/master/screenshots/character-rater-ss-5.png)
+![Comments](https://github.com/Antheagao/character-rater/tree/master/screenshots/character-rater-ss-6.png)
+
 
 
