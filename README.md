@@ -25,14 +25,15 @@ Users can sign in, like/dislike entries, leave comments, and view top favorites 
 ## 📸 Screenshots
 
 
-<img src="./screenshots/character-rater-ss-1.png" width="400" alt="Home Page">
-<img src="./screenshots/character-rater-ss-2.png" width="400" alt="Character Detail">
+<img src="./screenshots/character-rater-ss-1.png" width="1000" alt="Home Page">
+<img src="./screenshots/character-rater-ss-2.png" width="1000" alt="Character Detail">
 <br>
-<img src="./screenshots/character-rater-ss-3.png" width="400" alt="Character Detail">
-<img src="./screenshots/character-rater-ss-4.png" width="400" alt="Character Detail">
+<img src="./screenshots/character-rater-ss-3.png" width="1000" alt="Character Detail">
+<img src="./screenshots/character-rater-ss-4.png" width="1000" alt="Character Detail">
 <br>
-<img src="./screenshots/character-rater-ss-5.png" width="400" alt="Profile">
-<img src="./screenshots/character-rater-ss-6.png" width="400" alt="Comments">
+<img src="./screenshots/character-rater-ss-5.png" width="1000" alt="Profile">
+<img src="./screenshots/character-rater-ss-6.png" width="1000" alt="Comments">
+
 
 
 
