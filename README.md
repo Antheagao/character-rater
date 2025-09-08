@@ -42,8 +42,14 @@ Users can sign in, like/dislike entries, leave comments, and view top favorites 
 <img src="./screenshots/character-rater-ss-6.png" width="1000" alt="Comments">
 <em>Comments Section - Read and post comments</em>
 
+<img src="./screenshots/signin.png" width="1000" alt="signin">
+<em>sign in page</em>
 
+<img src="./screenshots/signup.png" width="1000" alt="signup">
+<em>sign up page</em>
 
+<img src="./screenshots/searchbar.png" width="1000" alt="searchbar">
+<em>Search for anime details</em>
 
 
 
