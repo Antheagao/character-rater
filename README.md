@@ -24,15 +24,24 @@ Users can sign in, like/dislike entries, leave comments, and view top favorites 
 
 ## 📸 Screenshots
 
-
 <img src="./screenshots/character-rater-ss-1.png" width="1000" alt="Home Page">
+<em>Home Page - Browse top anime, manga, and characters</em>
+
 <img src="./screenshots/character-rater-ss-2.png" width="1000" alt="Character Detail">
-<br>
+<em>Character Details - View information and interact with characters</em>
+
 <img src="./screenshots/character-rater-ss-3.png" width="1000" alt="Character Detail">
+<em>Another view of character details</em>
+
 <img src="./screenshots/character-rater-ss-4.png" width="1000" alt="Character Detail">
-<br>
+<em>Additional character information display</em>
+
 <img src="./screenshots/character-rater-ss-5.png" width="1000" alt="Profile">
+<em>User Profile - Manage preferences and view activity</em>
+
 <img src="./screenshots/character-rater-ss-6.png" width="1000" alt="Comments">
+<em>Comments Section - Read and post comments</em>
+
 
 
 
